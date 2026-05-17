@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="22" fill="#1a7a4a"/>
+  <text y="72" font-size="60" x="50" text-anchor="middle">🏃</text>
+  <text y="95" font-size="10" x="50" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold">مراقبة</text>
+</svg>

@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>المراقبة المستمرة - ت.ب.ر</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+  :root {
+    --green: #1a7a4a;
+    --green-light: #25a86a;
+    --green-pale: #e8f7f0;
+    --green-mid: #b8ebd4;
+    --gold: #c9a227;
+    --gold-light: #f0c040;
+    --red: #c0392b;
+    --orange: #e67e22;
+    --bg: #f0f4f2;
+    --white: #ffffff;
+    --text: #1a2e22;
+    --text-light: #4a6858;
+    --border: #c5ddd1;
+    --shadow: 0 4px 20px rgba(26,122,74,0.12);
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1a7a4a 0%, #0d5c36 100%);
+    color: white;
+    padding: 16px 18px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+  }
+  .header-icon { font-size: 26px; }
+  .header-title { font-size: 17px; font-weight: 900; line-height: 1.2; }
+  .header-sub { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: white;
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 70px;
+    z-index: 99;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 0 0 auto;
+    padding: 11px 16px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-light);
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .tab.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+    background: var(--green-pale);
+  }
+
+  /* MAIN CONTENT */
+  .content { padding: 14px; padding-bottom: 65px; }
+
+  /* CLASS HEADER */
+  .class-header {
+    background: white;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .class-name { font-size: 16px; font-weight: 900; color: var(--green); }
+  .class-count { font-size: 12px; color: var(--text-light); background: var(--green-pale); padding: 3px 10px; border-radius: 20px; }
+
+  /* ADD STUDENT */
+  .add-section {
+    background: white;
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .add-title { font-size: 13px; font-weight: 700; color: var(--text-light); margin-bottom: 10px; }
+  .add-row { display: flex; gap: 8px; }
+  .add-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    outline: none;
+    color: var(--text);
+    background: var(--bg);
+  }
+  .add-input:focus { border-color: var(--green-light); background: white; }
+  .add-btn {
+    padding: 10px 16px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* STUDENT CARD */
+  .student-card {
+    background: white;
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.15s;
+  }
+  .student-card:active { transform: scale(0.99); }
+
+  .student-top {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    cursor: pointer;
+    gap: 10px;
+  }
+  .student-num {
+    width: 28px; height: 28px;
+    background: var(--green-pale);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--green);
+    flex-shrink: 0;
+  }
+  .student-name { flex: 1; font-size: 15px; font-weight: 700; }
+  .student-score {
+    font-size: 18px; font-weight: 900;
+    min-width: 44px; text-align: center;
+    padding: 4px 8px; border-radius: 8px;
+  }
+  .score-high { color: var(--green); background: var(--green-pale); }
+  .score-mid { color: var(--orange); background: #fef3e8; }
+  .score-low { color: var(--red); background: #fde8e8; }
+  .score-exempt { color: #7f8c8d; background: #f0f0f0; font-size: 12px; }
+
+  .expand-icon {
+    color: var(--text-light); font-size: 18px;
+    transition: transform 0.25s;
+    margin-right: 4px;
+  }
+  .student-card.open .expand-icon { transform: rotate(180deg); }
+
+  /* DETAIL PANEL */
+  .student-detail {
+    display: none;
+    padding: 0 14px 14px;
+    border-top: 1px solid var(--border);
+    animation: slideDown 0.2s ease;
+  }
+  .student-card.open .student-detail { display: block; }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SESSIONS GRID */
+  .section-label {
+    font-size: 12px; font-weight: 700; color: var(--text-light);
+    margin: 10px 0 6px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .sessions-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  .session-btn {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 2px; padding: 6px 2px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Cairo', sans-serif;
+    min-height: 52px;
+    justify-content: center;
+  }
+  .session-lbl { font-size: 10px; font-weight: 600; color: var(--text-light); }
+  .session-val { font-size: 13px; font-weight: 900; }
+
+  .session-present { background: var(--green-pale); border-color: var(--green-light); }
+  .session-present .session-val { color: var(--green); }
+  .session-present .session-lbl { color: var(--green); }
+
+  .session-late { background: #fff8e1; border-color: var(--gold-light); }
+  .session-late .session-val { color: var(--gold); }
+  .session-late .session-lbl { color: var(--gold); }
+
+  .session-absent { background: #fde8e8; border-color: #e74c3c; }
+  .session-absent .session-val { color: var(--red); }
+  .session-absent .session-lbl { color: var(--red); }
+
+  /* SCORES ROW */
+  .scores-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .score-field { display: flex; flex-direction: column; gap: 4px; }
+  .score-field label { font-size: 11px; font-weight: 700; color: var(--text-light); }
+  .score-input {
+    padding: 9px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+    outline: none;
+    color: var(--text);
+    background: var(--bg);
+  }
+  .score-input:focus { border-color: var(--green-light); background: white; }
+
+  /* NOTE */
+  .note-row { display: flex; gap: 8px; align-items: center; }
+  .note-select {
+    flex: 1;
+    padding: 9px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    outline: none;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .note-select:focus { border-color: var(--green-light); background: white; }
+
+  /* TOTAL BAR */
+  .total-bar {
+    background: linear-gradient(135deg, var(--green) 0%, #0d5c36 100%);
+    color: white;
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+  .total-label { font-size: 13px; font-weight: 700; }
+  .total-value { font-size: 22px; font-weight: 900; }
+
+  /* DELETE BTN */
+  .del-btn {
+    padding: 7px 12px;
+    background: #fde8e8;
+    color: var(--red);
+    border: 1.5px solid #e74c3c;
+    border-radius: 8px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .edit-btn {
+    padding: 7px 12px;
+    background: #e8f0fe;
+    color: #1a6bcc;
+    border: 1.5px solid #4a90d9;
+    border-radius: 8px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* BOTTOM BAR */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: white;
+    padding: 7px 10px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 5px;
+    z-index: 100;
+  }
+  .export-btn {
+    flex: 1;
+    padding: 8px 4px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 11px;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+  .export-excel { background: var(--green); color: white; }
+  .export-pdf { background: #c0392b; color: white; }
+  .manage-classes { background: var(--green-pale); color: var(--green); border: 1.5px solid var(--green); flex: 0 0 auto; padding: 13px 14px; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 20px 20px 0 0;
+    padding: 20px 16px 30px;
+    width: 100%;
+    max-height: 70vh;
+    overflow-y: auto;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-title { font-size: 17px; font-weight: 900; margin-bottom: 14px; color: var(--green); }
+  .modal-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 10px;
+    background: var(--bg);
+  }
+  .modal-input:focus { border-color: var(--green-light); background: white; }
+  .modal-btn {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    font-weight: 900;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+  .modal-confirm { background: var(--green); color: white; }
+  .modal-cancel { background: var(--bg); color: var(--text-light); }
+
+  .class-list-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--bg);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .class-list-item.active-class { background: var(--green-pale); border: 1.5px solid var(--green); }
+  .class-list-name { font-weight: 700; }
+  .class-del { color: var(--red); font-size: 18px; padding: 4px 8px; }
+
+  /* LEGEND */
+  .legend {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin: 8px 0 12px;
+    padding: 10px 14px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* STATS */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stat-card {
+    background: white; border-radius: 12px; padding: 12px 8px;
+    text-align: center; box-shadow: var(--shadow);
+  }
+  .stat-val { font-size: 20px; font-weight: 900; color: var(--green); }
+  .stat-lbl { font-size: 10px; color: var(--text-light); font-weight: 600; margin-top: 2px; }
+
+  /* SEARCH */
+  .search-box {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    outline: none;
+    background: white;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+  .search-box:focus { border-color: var(--green-light); }
+
+  .empty-state {
+    text-align: center; padding: 40px 20px;
+    color: var(--text-light); font-size: 14px;
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+
+  /* Session popup */
+  .session-popup {
+    display: none;
+    position: fixed;
+    bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    z-index: 300;
+    width: 260px;
+    animation: popIn 0.2s ease;
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: translateX(-50%) scale(0.9); }
+    to { opacity: 1; transform: translateX(-50%) scale(1); }
+  }
+  .session-popup.show { display: block; }
+  .popup-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; text-align: center; color: var(--green); }
+  .popup-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .popup-btn {
+    padding: 12px 4px;
+    border: none; border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px; font-weight: 900;
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .pb-present { background: var(--green-pale); color: var(--green); }
+  .pb-late { background: #fff8e1; color: var(--gold); }
+  .pb-absent { background: #fde8e8; color: var(--red); }
+  .popup-icon { font-size: 20px; }
+  .popup-overlay { display: none; position: fixed; inset: 0; z-index: 299; }
+  .popup-overlay.show { display: block; }
+  body.dark{background:#1a1f1c;color:#e8f5ed}
+  body.dark .header{background:linear-gradient(135deg,#0d4a2e,#061f13)}
+  body.dark .student-card,body.dark .add-section,body.dark .class-header,body.dark .legend,body.dark .stat-card{background:#242b26}
+  body.dark .tabs,body.dark .bottom-bar{background:#1e2820}
+  body.dark .tab{color:#8aab96}
+  body.dark .tab.active{background:#1a3326;color:#25a86a}
+  body.dark .modal{background:#242b26}
+  body.dark .add-input,body.dark .score-input,body.dark .search-box,body.dark .note-select{background:#1a2e22;color:#e8f5ed;border-color:#2d3d32}
+  .drag-handle{font-size:18px;color:#c5ddd1;cursor:grab;padding:2px 4px;user-select:none;flex-shrink:0}
+  .drag-handle:active{cursor:grabbing;color:var(--green)}
+  .student-card.drag-over{border:2px dashed var(--green);background:var(--green-pale)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-icon">🏃</div>
+  <div style="flex:1"><div class="header-title">المراقبة المستمرة</div><div class="header-sub">التربية البدنية والرياضية</div></div>
+  <div style="display:flex;gap:6px;align-items:center">
+    <select id="colorPicker" onchange="setColor(this.value)" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;border-radius:10px;padding:6px 8px;font-family:Cairo,sans-serif;font-size:12px;cursor:pointer;outline:none">
+      <option value="#1a7a4a" style="color:#1a7a4a">🟢 أخضر</option>
+      <option value="#1a6bcc" style="color:#1a6bcc">🔵 أزرق</option>
+      <option value="#c0392b" style="color:#c0392b">🔴 أحمر</option>
+      <option value="#8a4acc" style="color:#8a4acc">🟣 بنفسجي</option>
+      <option value="#c9a227" style="color:#c9a227">🟡 ذهبي</option>
+      <option value="#e67e22" style="color:#e67e22">🟠 برتقالي</option>
+    </select>
+    <button id="darkBtn" onclick="toggleDark()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;border-radius:10px;padding:6px 10px;font-size:16px;cursor:pointer">🌙</button>
+    <button onclick="showDashboard()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;border-radius:10px;padding:6px 10px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer">📊 لوحة</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs" id="tabsBar"></div>
+
+<!-- CONTENT -->
+<div class="content" id="mainContent"></div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <button class="export-btn manage-classes" onclick="openClassModal()">📋 الأقسام</button>
+  <button class="export-btn" style="background:var(--green-pale);color:var(--green);border:1.5px solid var(--green);flex:0 0 auto;padding:13px 12px" onclick="openAboutModal()">ℹ️</button>
+  <button class="export-btn export-excel" onclick="exportExcel()">⬇️ Excel</button>
+  <button class="export-btn export-pdf" onclick="exportPDF()">📄 PDF</button>
+  <button class="export-btn" style="background:#1a6bcc;color:white;flex:0 0 auto;padding:13px 10px" onclick="printClassList()" title="طباعة الكشف">🖨️</button>
+  <button class="export-btn" style="background:#c9a227;color:white;flex:0 0 auto;padding:13px 10px" onclick="sortStudents()" title="ترتيب حسب النقطة">🔢</button>
+</div>
+
+<!-- SESSION POPUP -->
+<div class="popup-overlay" id="popupOverlay" onclick="closeSessionPopup()"></div>
+<div class="session-popup" id="sessionPopup">
+  <div class="popup-title" id="popupTitle">تسجيل الحضور</div>
+  <div class="popup-btns">
+    <button class="popup-btn pb-present" onclick="setSession('P')"><span class="popup-icon">✅</span>حاضر</button>
+    <button class="popup-btn pb-late" onclick="setSession('M')"><span class="popup-icon">🤒</span>مريض</button>
+    <button class="popup-btn pb-absent" onclick="setSession('A')"><span class="popup-icon">❌</span>غائب</button>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">✏️ تعديل بيانات التلميذ</div>
+    <input class="modal-input" id="editLast" placeholder="اللقب" />
+    <input class="modal-input" id="editFirst" placeholder="الاسم" />
+    <select class="modal-input" id="editGender">
+      <option value="">— الجنس —</option>
+      <option value="ذكر">ذكر</option>
+      <option value="أنثى">أنثى</option>
+    </select>
+    <button class="modal-btn modal-confirm" onclick="saveEdit()">💾 حفظ التعديل</button>
+    <button class="modal-btn modal-cancel" onclick="closeEditModal()">إلغاء</button>
+  </div>
+</div>
+
+<!-- CLASS MODAL -->
+<div class="modal-overlay" id="classModal">
+  <div class="modal">
+    <div class="modal-title">⚙️ إدارة الأقسام</div>
+    <div id="classList"></div>
+    <div style="margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">
+      <div style="font-size:13px;font-weight:700;color:var(--text-light);margin-bottom:8px;">إضافة قسم جديد</div>
+      <input class="modal-input" id="newClassName" placeholder="مثال: 2 آداب أ" />
+      <button class="modal-btn modal-confirm" onclick="addClass()">+ إضافة القسم</button>
+    </div>
+    <button class="modal-btn modal-cancel" onclick="closeClassModal()">إغلاق</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>window.addEventListener("error",function(e){if(e.filename&&e.filename.includes("xlsx")){window._xlsxFailed=true;}},true);</script>
+<script>
+// =================== STATE ===================
+let state = JSON.parse(localStorage.getItem('mrc_state') || 'null') || {
+  classes: [
+    { id: 'c1', name: '2 آداب 1', students: [] },
+    { id: 'c2', name: '2 آداب 2', students: [] },
+    { id: 'c3', name: '2 علوم ت', students: [] },
+    { id: 'c4', name: '3 آداب وفلسفة', students: [] },
+    { id: 'c5', name: '3 علوم ت', students: [] },
+    { id: 'c6', name: '3 لغات وهندسة', students: [] },
+  ],
+  activeClass: 'c1'
+};
+
+// Populate from Excel data
+const excelData = {
+  'c1': [
+    {id:'s1',last:'براهمي',first:'أسماء',gender:'أنثى',sessions:['A','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s2',last:'براهمي',first:'فريحة',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s3',last:'بلقوراري',first:'خالد',gender:'ذكر',sessions:['','A','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s4',last:'بوسيف',first:'أماني إسراء',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s5',last:'بوعزة',first:'إسراء',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s6',last:'بوعزة',first:'بشرى',gender:'أنثى',sessions:['M','','','','','',''],discipline:2,behavior:1.5,teacher:1,note:''},
+    {id:'s7',last:'بوعزة',first:'حليمة',gender:'أنثى',sessions:['','','','','','',''],discipline:0,behavior:0,teacher:0,note:'معفى'},
+    {id:'s8',last:'بوعزة',first:'عبد الوهاب',gender:'ذكر',sessions:['','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s9',last:'بوعزة',first:'نسرين',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s10',last:'بوعزة',first:'هبة الرحمان',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s11',last:'بوعكة',first:'بشرى',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s12',last:'جرماني',first:'مريم',gender:'أنثى',sessions:['','','','','','',''],discipline:0,behavior:0,teacher:0,note:'معفى'},
+    {id:'s13',last:'حكومي',first:'حبيبة',gender:'أنثى',sessions:['A','A','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s14',last:'حكومي',first:'ذهيبة',gender:'أنثى',sessions:['M','','','','','',''],discipline:2,behavior:1.25,teacher:1,note:''},
+    {id:'s15',last:'حكومي',first:'وهيبة',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.25,teacher:1,note:''},
+    {id:'s16',last:'حملات',first:'شيماء',gender:'أنثى',sessions:['','A','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s17',last:'زاوي',first:'بشرى',gender:'أنثى',sessions:['','','','','','',''],discipline:0,behavior:0,teacher:0,note:'معفى'},
+    {id:'s18',last:'طراش',first:'رحاب',gender:'أنثى',sessions:['','M','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s19',last:'عبد النور',first:'حمزة',gender:'ذكر',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s20',last:'مالكي',first:'بشرى',gender:'أنثى',sessions:['M','','','','','',''],discipline:2,behavior:1,teacher:0,note:''},
+    {id:'s21',last:'مرزوقي',first:'سمية رانيا',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s22',last:'مرسلي',first:'يوسف',gender:'ذكر',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s23',last:'وسعي',first:'خير الدين',gender:'ذكر',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+  ],
+  'c2': [
+    {id:'s24',last:'بلفضال',first:'إسمهان',gender:'أنثى',sessions:['M','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s25',last:'بن عيسى',first:'شهيناز',gender:'أنثى',sessions:['A','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s26',last:'بوعزة',first:'رحاب إيمان',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s27',last:'بوعزة',first:'سهام',gender:'أنثى',sessions:['M','','','','','',''],discipline:2,behavior:1.5,teacher:1,note:''},
+    {id:'s28',last:'بوعزة',first:'شيماء',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:1,note:''},
+    {id:'s29',last:'بوعزة',first:'علاء الدين',gender:'ذكر',sessions:['','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s30',last:'بوعزة',first:'لويزة',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1,teacher:0,note:''},
+    {id:'s31',last:'بوعزة',first:'مكية',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:1,note:''},
+    {id:'s32',last:'بوعكة',first:'مولات',gender:'أنثى',sessions:['M','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s33',last:'توميات',first:'ابتسام',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s34',last:'حكومي',first:'آمال',gender:'أنثى',sessions:['M','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s35',last:'حكومي',first:'عبد الحميد',gender:'ذكر',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s36',last:'رحماني',first:'محمد الأمين',gender:'ذكر',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s37',last:'زاوي',first:'باهية',gender:'أنثى',sessions:['','A','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s38',last:'زاوي',first:'سيد احمد',gender:'ذكر',sessions:['','','','','','',''],discipline:2,behavior:1.5,teacher:0,note:''},
+    {id:'s39',last:'سلامي',first:'شهيناز رانيا',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s40',last:'سماعي',first:'حنان',gender:'أنثى',sessions:['M','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s41',last:'صدادقة',first:'شاهيناز',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s42',last:'طاهري',first:'رباب',gender:'أنثى',sessions:['','M','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s43',last:'محي الدين',first:'ريان',gender:'ذكر',sessions:['','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s44',last:'مالكي',first:'روميسة',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.25,teacher:1,note:''},
+    {id:'s45',last:'معزوز',first:'عمارية',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1.25,teacher:0,note:''},
+    {id:'s46',last:'ملاتي',first:'كوثر',gender:'أنثى',sessions:['','','','','','',''],discipline:0,behavior:0,teacher:0,note:'معفى'},
+    {id:'s47',last:'مناد',first:'وهيبة',gender:'أنثى',sessions:['','','','','','',''],discipline:2,behavior:1,teacher:0,note:''},
+  ]
+};
+
+// Merge Excel data if students empty
+state.classes.forEach(cls => {
+  if (cls.students.length === 0 && excelData[cls.id]) {
+    cls.students = excelData[cls.id].map(s => ({...s}));
+  }
+});
+
+function save() {
+  localStorage.setItem('mrc_state', JSON.stringify(state));
+}
+
+// =================== SESSION LOGIC ===================
+function calcSessionScore(sessions) {
+  // Each session: present=2, late=1.5, absent=0, empty(present)=2
+  // Max = 7 sessions × 2 = 14
+  let total = 0;
+  sessions.forEach(s => {
+    if (s === 'A') total += 0;
+    else if (s === 'M') total += 1;
+    else total += 2; // present or empty
+  });
+  return Math.min(total, 14);
+}
+
+function calcTotal(student) {
+  if (student.note === 'معفى') return 'معفى';
+  const sessions = calcSessionScore(student.sessions);
+  const disc = parseFloat(student.discipline) || 0;
+  const beh = parseFloat(student.behavior) || 0;
+  const teach = parseFloat(student.teacher) || 0;
+  return Math.min(sessions + disc + beh + teach, 20);
+}
+
+function getScoreClass(score) {
+  if (score === 'معفى') return 'score-exempt';
+  if (score >= 15) return 'score-high';
+  if (score >= 10) return 'score-mid';
+  return 'score-low';
+}
+
+// =================== RENDER ===================
+function getActiveClass() {
+  return state.classes.find(c => c.id === state.activeClass) || state.classes[0];
+}
+
+function renderTabs() {
+  const bar = document.getElementById('tabsBar');
+  bar.innerHTML = state.classes.map(c =>
+    `<button class="tab ${c.id === state.activeClass ? 'active' : ''}" onclick="switchClass('${c.id}')">${c.name}</button>`
+  ).join('');
+}
+
+function renderContent(filter = '') {
+  const cls = getActiveClass();
+  if (!cls) { document.getElementById('mainContent').innerHTML = '<div class="empty-state"><div class="empty-icon">📂</div>لا يوجد قسم. أضف قسماً جديداً.</div>'; return; }
+
+  let students = cls.students;
+  if (filter) {
+    const f = filter.toLowerCase();
+    students = students.filter(s => (s.last + s.first).includes(f));
+  }
+
+  const total = cls.students.length;
+  const exempt = cls.students.filter(s => s.note === 'معفى').length;
+  const avg = cls.students.filter(s => s.note !== 'معفى').map(s => calcTotal(s)).reduce((a, b) => a + b, 0) / Math.max(1, total - exempt);
+
+  let html = `
+    <div class="class-header">
+      <div class="class-name">${cls.name}</div>
+      <div class="class-count">${total} تلميذ</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val">${total}</div><div class="stat-lbl">المجموع</div></div>
+      <div class="stat-card"><div class="stat-val">${exempt}</div><div class="stat-lbl">معفى</div></div>
+      <div class="stat-card"><div class="stat-val">${avg.toFixed(1)}</div><div class="stat-lbl">المعدل</div></div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>حاضر ✅</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>مريض 🤒</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>غائب A</div>
+    </div>
+    <input class="search-box" placeholder="🔍 بحث عن تلميذ..." oninput="filterStudents(this.value)" id="searchBox">
+    <div class="add-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="add-title" style="margin:0">➕ إضافة تلميذ</div><label style="display:flex;align-items:center;gap:4px;background:#1a6bcc;color:white;padding:7px 12px;border-radius:10px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📥 استيراد Excel<input type="file" accept=".xlsx,.xls,.csv" onchange="importExcel(event)" style="display:none"></label></div>
+      <div class="add-row">
+        <input class="add-input" id="newLast" placeholder="اللقب" />
+        <input class="add-input" id="newFirst" placeholder="الاسم" />
+      </div>
+      <div class="add-row" style="margin-top:6px">
+        <select class="add-input" id="newGender">
+          <option value="">الجنس</option>
+          <option value="ذكر">👦 ذكر</option>
+          <option value="أنثى">👧 أنثى</option>
+        </select>
+        <button class="add-btn" onclick="addStudent()">➕ إضافة</button>
+      </div>
+      <div id="addMsg" style="margin-top:8px;font-size:13px;font-weight:700;color:var(--green);display:none;text-align:center;padding:6px;background:var(--green-pale);border-radius:8px;"></div>
+    </div>
+    <div id="studentsList"></div>
+  `;
+
+  document.getElementById('mainContent').innerHTML = html;
+  renderStudentsList('');
+}
+
+function renderStudentsList(filter) {
+  const cls = getActiveClass();
+  if (!cls) return;
+  let students = cls.students;
+  if (filter) {
+    students = students.filter(s => (s.last + ' ' + s.first).includes(filter));
+  }
+  const container = document.getElementById('studentsList');
+  if (!container) return;
+  let html = '';
+  if (students.length === 0) {
+    html = '<div class="empty-state"><div class="empty-icon">👤</div>لا يوجد نتائج.</div>';
+  } else {
+    students.forEach((s, idx) => {
+      const total = calcTotal(s);
+      const sc = getScoreClass(total);
+      const sessScore = calcSessionScore(s.sessions);
+      html += `
+        <div class="student-card" id="card_${s.id}">
+          <div class="student-top" onclick="toggleCard('${s.id}')" id="card_top_${s.id}">
+            <div class="drag-handle" draggable="true"
+              ondragstart="dragStart(event,'${s.id}')"
+              ondragover="event.preventDefault()"
+              ondrop="dragDrop(event,'${s.id}')"
+              ondragenter="dragEnter(event,'${s.id}')"
+              ondragleave="dragLeave(event,'${s.id}')"
+              onclick="event.stopPropagation()">☰</div>
+            <div class="student-num">${idx + 1}</div>
+            <div class="student-name">${s.last} ${s.first}</div>
+            <div style="display:flex;gap:4px;align-items:center" onclick="event.stopPropagation()">
+              <button onclick="printStudentCard('${s.id}')" style="background:none;border:none;font-size:20px;cursor:pointer;padding:2px;line-height:1" title="بطاقة PDF">🪪</button>
+              <button onclick="sendSMS('${s.id}')" style="background:none;border:none;font-size:20px;cursor:pointer;padding:2px;line-height:1;opacity:${s.phone?'1':'0.25'}" title="SMS">📱</button>
+              <button onclick="sendWhatsApp('${s.id}')" style="background:none;border:none;font-size:20px;cursor:pointer;padding:2px;line-height:1;opacity:${s.phone?'1':'0.25'}" title="واتساب">💬</button>
+              <button onclick="deleteStudent('${s.id}')" style="background:none;border:none;font-size:20px;cursor:pointer;padding:2px;line-height:1" title="حذف">🗑️</button>
+            </div>
+            <div class="student-score ${sc}">${total === 'معفى' ? 'معفى' : total}</div>
+            <div class="expand-icon">▾</div>
+          </div>
+          <div class="student-detail">
+            ${s.note === 'معفى' ? '<div style="text-align:center;padding:10px;color:#7f8c8d;font-weight:700;font-size:15px">🏥 هذا التلميذ معفى من التقييم</div>' : `
+            <div class="section-label">الحصص (${sessScore.toFixed(1)}/14) — انقر للتغيير</div>
+            <div class="sessions-grid">
+              ${s.sessions.map((sv, si) => {
+                const cls2 = sv === 'A' ? 'session-absent' : sv === 'M' ? 'session-late' : 'session-present';
+                const lbl2 = sv === 'A' ? '❌' : sv === 'M' ? '🤒' : '✅';
+                const val2 = sv || 'ح';
+                return `<button class="session-btn ${cls2}" onclick="openSessionPopup('${s.id}',${si},event)">
+                  <span class="session-lbl">ح${si+1}</span>
+                  <span class="session-val">${lbl2}</span>
+                </button>`;
+              }).join('')}
+            </div>
+            <div class="section-label">النقاط الإضافية</div>
+            <div class="scores-row">
+              <div class="score-field">
+                <label>الانضباط /2</label>
+                <input class="score-input" type="number" min="0" max="2" step="0.25" value="${s.discipline}" onchange="updateScore('${s.id}','discipline',this.value)">
+              </div>
+              <div class="score-field">
+                <label>السلوك /2</label>
+                <input class="score-input" type="number" min="0" max="2" step="0.25" value="${s.behavior}" onchange="updateScore('${s.id}','behavior',this.value)">
+              </div>
+              <div class="score-field">
+                <label>الأستاذ /2</label>
+                <input class="score-input" type="number" min="0" max="2" step="0.25" value="${s.teacher}" onchange="updateScore('${s.id}','teacher',this.value)">
+              </div>
+            </div>
+            <div class="total-bar">
+              <span class="total-label">المجموع الكلي</span>
+              <span class="total-value" id="total_${s.id}">${total} / 20</span>
+            </div>
+            `}
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <select class="note-select" onchange="updateNote('${s.id}',this.value)">
+                <option value="" ${s.note===''?'selected':''}>— بدون ملاحظة —</option>
+                <option value="معفى" ${s.note==='معفى'?'selected':''}>🏥 معفى</option>
+                <option value="ممتاز" ${s.note==='ممتاز'?'selected':''}>⭐ ممتاز</option>
+                <option value="جيد جداً" ${s.note==='جيد جداً'?'selected':''}>👍 جيد جداً</option>
+              </select>
+              <button onclick="saveAndClose('${s.id}')" style="flex:1;padding:10px;background:var(--green);color:white;border:none;border-radius:10px;font-family:Cairo,sans-serif;font-size:14px;font-weight:900;cursor:pointer">💾 حفظ</button>
+            </div>
+            <div style="margin-top:6px">
+              <input class="score-input" type="tel" placeholder="📞 رقم الولي (لتفعيل SMS وواتساب)" style="width:100%;font-size:13px;text-align:right" value="${s.phone||''}" onchange="updatePhone('${s.id}',this.value)">
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  container.innerHTML = html;
+}
+
+function render(filter = '') {
+  renderTabs();
+  renderContent(filter);
+}
+
+// =================== INTERACTIONS ===================
+function filterStudents(val) {
+  renderStudentsList(val);
+}
+function switchClass(id) {
+  state.activeClass = id;
+  save();
+  render();
+}
+
+function toggleCard(id) {
+  const card = document.getElementById('card_' + id);
+  card.classList.toggle('open');
+}
+
+let currentPopupStudentId = null;
+let currentPopupSessionIdx = null;
+
+function openSessionPopup(studentId, sessionIdx, event) {
+  event.stopPropagation();
+  const cls = getActiveClass();
+  const s = cls.students.find(x => x.id === studentId);
+  currentPopupStudentId = studentId;
+  currentPopupSessionIdx = sessionIdx;
+  document.getElementById('popupTitle').textContent = `الحصة ${sessionIdx + 1} — ${s.last} ${s.first}`;
+  document.getElementById('sessionPopup').classList.add('show');
+  document.getElementById('popupOverlay').classList.add('show');
+}
+
+function closeSessionPopup() {
+  document.getElementById('sessionPopup').classList.remove('show');
+  document.getElementById('popupOverlay').classList.remove('show');
+  currentPopupStudentId = null;
+  currentPopupSessionIdx = null;
+}
+
+function setSession(val) {
+  if (!currentPopupStudentId) return;
+  const cls = getActiveClass();
+  const s = cls.students.find(x => x.id === currentPopupStudentId);
+  s.sessions[currentPopupSessionIdx] = val === 'P' ? '' : val;
+  save();
+  closeSessionPopup();
+  renderStudentsList(document.getElementById('searchBox')?.value || '');
+  // Re-open the card
+  setTimeout(() => {
+    const card = document.getElementById('card_' + currentPopupStudentId);
+    if (card) card.classList.add('open');
+  }, 10);
+}
+
+function updateScore(id, field, val) {
+  const cls = getActiveClass();
+  const s = cls.students.find(x => x.id === id);
+  s[field] = parseFloat(val) || 0;
+  // Update total live
+  const total = calcTotal(s);
+  const el = document.getElementById('total_' + id);
+  if (el) el.textContent = total + ' / 20';
+  // Update card score
+  const card = document.getElementById('card_' + id);
+  if (card) {
+    const scoreEl = card.querySelector('.student-score');
+    scoreEl.textContent = total;
+    scoreEl.className = 'student-score ' + getScoreClass(total);
+  }
+  save();
+}
+
+function updateNote(id, val) {
+  const cls = getActiveClass();
+  const s = cls.students.find(x => x.id === id);
+  s.note = val;
+  save();
+  renderStudentsList(document.getElementById('searchBox')?.value || '');
+  setTimeout(() => {
+    const card = document.getElementById('card_' + id);
+    if (card) card.classList.add('open');
+  }, 10);
+}
+
+let _deleteId = null;
+function deleteStudent(id) {
+  const cls = getActiveClass();
+  const s = cls.students.find(x => x.id === id);
+  if (!s) return;
+  _deleteId = id;
+  document.getElementById('deleteStudentName').textContent = s.last + ' ' + s.first;
+  document.getElementById('deleteModal').classList.add('open');
+}
+function confirmDelete() {
+  if (!_deleteId) return;
+  const cls = getActiveClass();
+  cls.students = cls.students.filter(s => s.id !== _deleteId);
+  _deleteId = null;
+  document.getElementById('deleteModal').classList.remove('open');
+  save();
+  render();
+  showToast('✅ تم حذف التلميذ', 'success');
+}
+
+function addStudent() {
+  const last = document.getElementById('newLast').value.trim();
+  const first = document.getElementById('newFirst').value.trim();
+  const gender = document.getElementById('newGender').value;
+  if (!last && !first) return;
+  const cls = getActiveClass();
+  cls.students.push({
+    id: 'ns_' + Date.now(),
+    last: last || '---',
+    first: first || '---',
+    gender: gender,
+    sessions: ['', '', '', '', '', '', ''],
+    discipline: 2,
+    behavior: 1.5,
+    teacher: 0,
+    note: ''
+  });
+  save();
+  render();
+  // Show success message
+  const msg = document.getElementById('addMsg');
+  if (msg) {
+    msg.textContent = 'تم إضافة التلميذ ' + (last || '') + ' ' + (first || '') + ' بنجاح ✅';
+    msg.style.display = 'block';
+    setTimeout(() => { msg.style.display = 'none'; }, 3000);
+  }
+  // Clear inputs
+  document.getElementById('newLast').value = '';
+  document.getElementById('newFirst').value = '';
+  document.getElementById('newGender').value = '';
+}
+
+// =================== EDIT STUDENT ===================
+let currentEditId = null;
+function openEditModal(id) {
+  const cls = getActiveClass();
+  const s = cls.students.find(x => x.id === id);
+  if (!s) return;
+  currentEditId = id;
+  document.getElementById('editLast').value = s.last;
+  document.getElementById('editFirst').value = s.first;
+  document.getElementById('editGender').value = s.gender || '';
+  document.getElementById('editModal').classList.add('open');
+}
+function closeEditModal() {
+  document.getElementById('editModal').classList.remove('open');
+  currentEditId = null;
+}
+function saveEdit() {
+  if (!currentEditId) return;
+  const cls = getActiveClass();
+  const s = cls.students.find(x => x.id === currentEditId);
+  if (!s) return;
+  s.last = document.getElementById('editLast').value.trim() || s.last;
+  s.first = document.getElementById('editFirst').value.trim() || s.first;
+  s.gender = document.getElementById('editGender').value;
+  save();
+  closeEditModal();
+  renderStudentsList(document.getElementById('searchBox')?.value || '');
+}
+
+// =================== CLASS MANAGEMENT ===================
+function openClassModal() {
+  renderClassList();
+  document.getElementById('classModal').classList.add('open');
+}
+function closeClassModal() {
+  document.getElementById('classModal').classList.remove('open');
+}
+function renderClassList() {
+  const div = document.getElementById('classList');
+  div.innerHTML = state.classes.map(c => `
+    <div class="class-list-item ${c.id === state.activeClass ? 'active-class' : ''}" onclick="switchClass('${c.id}');closeClassModal()">
+      <span class="class-list-name">${c.name}</span>
+      <span class="class-del" onclick="event.stopPropagation();deleteClass('${c.id}')">✕</span>
+    </div>
+  `).join('');
+}
+function addClass() {
+  const name = document.getElementById('newClassName').value.trim();
+  if (!name) return;
+  const newId = 'c_' + Date.now();
+  state.classes.push({ id: newId, name, students: [] });
+  state.activeClass = newId;
+  document.getElementById('newClassName').value = '';
+  save();
+  renderClassList();
+  render();
+}
+function deleteClass(id) {
+  if (state.classes.length <= 1) { alert('لا يمكن حذف القسم الوحيد!'); return; }
+  if (!confirm('هل تريد حذف هذا القسم وكل بياناته؟')) return;
+  state.classes = state.classes.filter(c => c.id !== id);
+  if (state.activeClass === id) state.activeClass = state.classes[0].id;
+  save();
+  renderClassList();
+  render();
+}
+
+// =================== EXPORT EXCEL ===================
+function exportExcel() {
+  if(typeof XLSX === 'undefined' || typeof XLSX.utils === 'undefined') {
+    var s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload=function(){exportExcel();};
+    s.onerror=function(){showToast('⚠️ يتطلب اتصال إنترنت','warn');};
+    document.head.appendChild(s);return;
+  }
+  const wb = XLSX.utils.book_new();
+
+  // Colors
+  const HEADER_BG  = '1a7a4a'; // green
+  const HEADER_FG  = 'FFFFFF';
+  const EXEMPT_BG  = 'D5E8D4'; // light green for exempt rows
+  const EXEMPT_FG  = '2D6A2D';
+  const ALT_BG     = 'F2F9F5'; // alternating row
+  const WHITE      = 'FFFFFF';
+  const FOOTER_BG  = 'EAF4EE';
+
+  const headerStyle = {
+    font: { bold: true, color: { rgb: HEADER_FG }, name: 'Arial', sz: 11 },
+    fill: { fgColor: { rgb: HEADER_BG } },
+    alignment: { horizontal: 'center', vertical: 'center', wrapText: true, readingOrder: 2 },
+    border: {
+      top: { style: 'thin', color: { rgb: 'AAAAAA' } },
+      bottom: { style: 'thin', color: { rgb: 'AAAAAA' } },
+      left: { style: 'thin', color: { rgb: 'AAAAAA' } },
+      right: { style: 'thin', color: { rgb: 'AAAAAA' } }
+    }
+  };
+
+  const cellStyle = (bg, fg, bold) => ({
+    font: { name: 'Arial', sz: 11, bold: !!bold, color: { rgb: fg || '1A2E22' } },
+    fill: { fgColor: { rgb: bg || WHITE } },
+    alignment: { horizontal: 'center', vertical: 'center', readingOrder: 2 },
+    border: {
+      top: { style: 'thin', color: { rgb: 'CCCCCC' } },
+      bottom: { style: 'thin', color: { rgb: 'CCCCCC' } },
+      left: { style: 'thin', color: { rgb: 'CCCCCC' } },
+      right: { style: 'thin', color: { rgb: 'CCCCCC' } }
+    }
+  });
+
+  const exemptStyle = cellStyle(EXEMPT_BG, EXEMPT_FG, true);
+  const exemptSessionStyle = { ...exemptStyle, font: { ...exemptStyle.font, italic: true } };
+
+  state.classes.forEach(cls => {
+    const headers = [
+      'الرقم', 'اللقب', 'الاسم', 'الجنس',
+      'ح1', 'ح2', 'ح3', 'ح4', 'ح5', 'ح6', 'ح7',
+      'مجموع النقاط (14)', 'الانضباط (2)', 'المشاركة (2)', 'الأستاذ (2)',
+      'نقطة المراقبة (20)', 'الملاحظات'
+    ];
+    const NCOLS = headers.length; // 17
+
+    const ws = {};
+    const encode = (r, c) => XLSX.utils.encode_cell({ r, c });
+
+    // --- HEADER ROW (row 0) ---
+    headers.forEach((h, c) => {
+      ws[encode(0, c)] = { v: h, t: 's', s: headerStyle };
+    });
+
+    // --- DATA ROWS ---
+    cls.students.forEach((s, i) => {
+      const rowIdx = i + 1;
+      const isExempt = s.note === 'معفى';
+      const total = calcTotal(s);
+      const sessScore = isExempt ? '' : calcSessionScore(s.sessions);
+      const bg = isExempt ? EXEMPT_BG : (i % 2 === 0 ? WHITE : ALT_BG);
+      const fg = isExempt ? EXEMPT_FG : '1A2E22';
+      const st = isExempt ? exemptStyle : cellStyle(bg, fg, false);
+      const sessSt = isExempt ? exemptSessionStyle : st;
+
+      const sessVal = (sv) => {
+        if (isExempt) return '';
+        if (sv === 'A') return 'A';
+        if (sv === 'M') return 'M';
+        return '';
+      };
+
+      const rowData = [
+        i + 1,
+        s.last,
+        s.first,
+        s.gender || '',
+        sessVal(s.sessions[0]),
+        sessVal(s.sessions[1]),
+        sessVal(s.sessions[2]),
+        sessVal(s.sessions[3]),
+        sessVal(s.sessions[4]),
+        sessVal(s.sessions[5]),
+        sessVal(s.sessions[6]),
+        isExempt ? '' : sessScore,
+        isExempt ? '' : s.discipline,
+        isExempt ? '' : s.behavior,
+        isExempt ? '' : s.teacher,
+        isExempt ? '' : total,
+        s.note || ''
+      ];
+
+      rowData.forEach((v, c) => {
+        const isSessCol = c >= 4 && c <= 10;
+        ws[encode(rowIdx, c)] = {
+          v: v === '' ? '' : v,
+          t: typeof v === 'number' ? 'n' : 's',
+          s: isSessCol ? sessSt : st
+        };
+      });
+    });
+
+    // --- EMPTY ROW SEPARATOR ---
+    const sepRow = cls.students.length + 2;
+
+    // --- FOOTER ROW (signatures) ---
+    const footerRow = sepRow;
+    // "الأستاذ" on the right (col 0), "الناظر" on the left (last col)
+    const footerSt = {
+      font: { bold: true, name: 'Arial', sz: 11, color: { rgb: '1a7a4a' } },
+      fill: { fgColor: { rgb: FOOTER_BG } },
+      alignment: { horizontal: 'center', vertical: 'center', readingOrder: 2 },
+      border: {
+        top: { style: 'medium', color: { rgb: '1a7a4a' } },
+        bottom: { style: 'medium', color: { rgb: '1a7a4a' } },
+        left: { style: 'medium', color: { rgb: '1a7a4a' } },
+        right: { style: 'medium', color: { rgb: '1a7a4a' } }
+      }
+    };
+    // في RTL: العمود الأول (index 0) يظهر على اليمين، الأخير على اليسار
+    // الأستاذ على اليمين = cols 0-2 | الناظر على اليسار = cols 14-16
+    ws[encode(footerRow, 0)] = { v: 'الأستاذ:', t: 's', s: footerSt };
+    ws[encode(footerRow, 1)] = { v: '', t: 's', s: footerSt };
+    ws[encode(footerRow, 2)] = { v: '', t: 's', s: footerSt };
+    ws[encode(footerRow, NCOLS - 3)] = { v: '', t: 's', s: footerSt };
+    ws[encode(footerRow, NCOLS - 2)] = { v: '', t: 's', s: footerSt };
+    ws[encode(footerRow, NCOLS - 1)] = { v: 'الناظر:', t: 's', s: footerSt };
+    // Fill middle cells of footer
+    for (let c = 3; c < NCOLS - 3; c++) {
+      ws[encode(footerRow, c)] = { v: '', t: 's', s: { fill: { fgColor: { rgb: FOOTER_BG } }, alignment: { readingOrder: 2 } } };
+    }
+
+    // Merges
+    ws['!merges'] = [
+      { s: { r: footerRow, c: 0 }, e: { r: footerRow, c: 2 } },
+      { s: { r: footerRow, c: NCOLS - 3 }, e: { r: footerRow, c: NCOLS - 1 } }
+    ];
+
+    // Sheet range
+    ws['!ref'] = XLSX.utils.encode_range({ r: 0, c: 0 }, { r: footerRow, c: NCOLS - 1 });
+
+    // RTL direction — must use array form
+    ws['!sheetViews'] = [{ rightToLeft: true }];
+
+    // Row heights
+    ws['!rows'] = [{ hpt: 36 }]; // header taller
+    for (let i = 1; i <= cls.students.length; i++) ws['!rows'][i] = { hpt: 22 };
+    ws['!rows'][footerRow] = { hpt: 32 };
+
+    // Column widths
+    ws['!cols'] = [
+      {wch:5},{wch:16},{wch:16},{wch:7},
+      {wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},
+      {wch:15},{wch:12},{wch:12},{wch:10},{wch:15},{wch:12}
+    ];
+
+    const sheetName = cls.name.replace(/[:\\\/\?\*\[\]]/g, '-').substring(0, 31);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
+
+  const filename = `المراقبة_المستمرة_${new Date().toLocaleDateString('ar')}.xlsx`;
+  XLSX.writeFile(wb, filename);
+}
+
+
+// === DARK MODE ===
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  var d=document.body.classList.contains('dark');
+  localStorage.setItem('mrc_dark',d?'1':'0');
+  var b=document.getElementById('darkBtn');
+  if(b)b.textContent=d?'☀️':'🌙';
+}
+if(localStorage.getItem('mrc_dark')==='1') document.body.classList.add('dark');
+
+// === TOAST ===
+function showToast(msg,type){
+  var e=document.getElementById('_toast');
+  if(!e){
+    e=document.createElement('div');e.id='_toast';
+    e.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);padding:11px 18px;border-radius:12px;font-family:Cairo,sans-serif;font-weight:700;font-size:14px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.25);white-space:nowrap;display:none;color:white';
+    document.body.appendChild(e);
+  }
+  e.style.background=type==='error'?'#c0392b':type==='warn'?'#e67e22':'#1a7a4a';
+  e.textContent=msg;e.style.display='block';e.style.opacity='1';
+  setTimeout(function(){e.style.opacity='0';setTimeout(function(){e.style.display='none';},400);},2500);
+}
+
+// === DASHBOARD ===
+function showDashboard(){
+  var dsh=document.getElementById('_dsh');
+  dsh.style.display='flex';
+  var totalS=0,totalA=0,totalM=0,avgs=[];
+  state.classes.forEach(function(cls){
+    var sc=cls.students.filter(function(s){return s.note!=='معفى';});
+    totalS+=cls.students.length;
+    cls.students.forEach(function(s){s.sessions.forEach(function(sv){if(sv==='A')totalA++;if(sv==='M')totalM++;});});
+    var avg=sc.length>0?sc.map(function(s){return calcTotal(s);}).filter(function(t){return t!=='معفى';}).reduce(function(a,b){return a+b;},0)/sc.length:0;
+    avgs.push({name:cls.name,avg:avg,count:cls.students.length,id:cls.id});
+  });
+  var gAvg=(avgs.reduce(function(a,b){return a+b.avg;},0)/Math.max(1,avgs.length)).toFixed(2);
+  var best=[].concat(avgs).sort(function(a,b){return b.avg-a.avg;})[0];
+  var worst=[].concat(avgs).sort(function(a,b){return a.avg-b.avg;})[0];
+  var bars='';
+  avgs.forEach(function(cl){
+    var col=cl.avg>=15?'#1a7a4a':cl.avg>=10?'#c9a227':'#c0392b';
+    var pct=Math.round(cl.avg/20*100);
+    bars+='<div style="margin-bottom:8px;cursor:pointer" onclick="switchClass(\''+cl.id+'\');document.getElementById(\'_dsh\').style.display=\'none\'">';
+    bars+='<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="font-weight:700">'+cl.name+'</span><span style="color:'+col+';font-weight:900">'+cl.avg.toFixed(2)+'/20</span></div>';
+    bars+='<div style="background:#f0f4f2;border-radius:8px;height:8px"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:8px"></div></div>';
+    bars+='<div style="font-size:10px;color:#888;margin-top:2px">'+cl.count+' تلميذ</div></div>';
+  });
+  var html='';
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+  html+='<div style="font-size:16px;font-weight:900;color:#1a7a4a">📊 لوحة التحكم</div>';
+  html+='<button onclick="document.getElementById(\'_dsh\').style.display=\'none\'" style="background:#f0f4f2;border:none;border-radius:8px;padding:6px 14px;font-family:Cairo,sans-serif;font-size:13px;cursor:pointer">✕ إغلاق</button></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
+  html+='<div style="background:#e8f7f0;border-radius:12px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:900;color:#1a7a4a">'+totalS+'</div><div style="font-size:11px;color:#4a6858">مجموع التلاميذ</div></div>';
+  html+='<div style="background:#e8f7f0;border-radius:12px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:900;color:#1a7a4a">'+gAvg+'</div><div style="font-size:11px;color:#4a6858">المعدل العام /20</div></div>';
+  html+='<div style="background:#fde8e8;border-radius:12px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:900;color:#c0392b">'+totalA+'</div><div style="font-size:11px;color:#4a6858">إجمالي الغياب</div></div>';
+  html+='<div style="background:#fff8e1;border-radius:12px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:900;color:#c9a227">'+totalM+'</div><div style="font-size:11px;color:#4a6858">إجمالي المرضى</div></div></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
+  html+='<div style="background:#e8f7f0;border-radius:12px;padding:10px;border-right:3px solid #1a7a4a"><div style="font-size:10px;color:#888">🏆 أفضل قسم</div><div style="font-size:13px;font-weight:900;color:#1a7a4a">'+(best?best.name:'—')+'</div><div style="font-size:18px;font-weight:900;color:#1a7a4a">'+(best?best.avg.toFixed(2):'')+'</div></div>';
+  html+='<div style="background:#fde8e8;border-radius:12px;padding:10px;border-right:3px solid #c0392b"><div style="font-size:10px;color:#888">📉 أضعف قسم</div><div style="font-size:13px;font-weight:900;color:#c0392b">'+(worst?worst.name:'—')+'</div><div style="font-size:18px;font-weight:900;color:#c0392b">'+(worst?worst.avg.toFixed(2):'')+'</div></div></div>';
+  html+='<div style="background:white;border-radius:12px;padding:12px;margin-bottom:10px"><div style="font-size:12px;font-weight:900;color:#1a7a4a;margin-bottom:8px">📋 مقارنة الأقسام</div>'+bars+'</div>';
+  html+='<div style="background:white;border-radius:12px;padding:12px"><div style="font-size:12px;font-weight:900;color:#1a7a4a;margin-bottom:8px">💾 الأدوات</div>';
+  html+='<div style="margin-bottom:10px"><a href="/guide.html" target="_blank" style="display:block;padding:11px;background:#1a6bcc;color:white;border-radius:10px;font-family:Cairo,sans-serif;font-weight:700;font-size:13px;text-align:center;text-decoration:none">📖 دليل المستخدم — اضغط للعرض والتحميل</a></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+  html+='<button onclick="exportBackup()" style="padding:11px;background:#1a7a4a;color:white;border:none;border-radius:10px;font-family:Cairo,sans-serif;font-weight:700;font-size:12px;cursor:pointer">📤 تصدير نسخة</button>';
+  html+='<label style="padding:11px;background:#e8f7f0;color:#1a7a4a;border:1.5px solid #1a7a4a;border-radius:10px;font-family:Cairo,sans-serif;font-weight:700;font-size:12px;cursor:pointer;text-align:center;display:block">📥 استيراد نسخة<input type="file" accept=".json" onchange="importBackup(event)" style="display:none"></label>';
+  html+='</div></div>';
+  document.getElementById('_dc').innerHTML=html;
+}
+
+// === BACKUP ===
+function exportBackup(){
+  var d=JSON.stringify(state,null,2);
+  var b=new Blob([d],{type:'application/json'});
+  var u=URL.createObjectURL(b);
+  var a=document.createElement('a');
+  a.href=u;a.download='مراقبة_'+new Date().toLocaleDateString('ar')+'.json';
+  a.click();URL.revokeObjectURL(u);
+  showToast('✅ تم تصدير النسخة','success');
+}
+function importBackup(event){
+  var f=event.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(e){
+    try{
+      var imp=JSON.parse(e.target.result);
+      if(!imp.classes)throw new Error('invalid');
+      if(!confirm('سيتم استبدال كل البيانات. المتابعة؟'))return;
+      state=imp;save();render();
+      document.getElementById('_dsh').style.display='none';
+      showToast('✅ تم استيراد النسخة','success');
+    }catch(ex){showToast('❌ ملف غير صالح','error');}
+  };
+  r.readAsText(f);
+}
+
+// === UPDATE PHONE ===
+function updatePhone(id,val){
+  var cls=getActiveClass();
+  var s=cls.students.find(function(x){return x.id===id;});
+  if(s){s.phone=val.trim();save();}
+}
+
+// === STUDENT CARD PDF ===
+function printStudentCard(id){
+  var cls=getActiveClass();
+  var s=cls.students.find(function(x){return x.id===id;});
+  if(!s)return;
+  var total=calcTotal(s);
+  var ss=calcSessionScore(s.sessions);
+  var ab=s.sessions.filter(function(sv){return sv==='A';}).length;
+  var sk=s.sessions.filter(function(sv){return sv==='M';}).length;
+  var today=new Date().toLocaleDateString('ar-DZ');
+  var sc=total==='معفى'?'#2d6a2d':total>=15?'#1a7a4a':total>=10?'#e67e22':'#c0392b';
+  var mn=total==='معفى'?'معفى':total>=18?'ممتاز':total>=16?'جيد جداً':total>=14?'جيد':total>=10?'مقبول':'ضعيف';
+  var win=window.open('','_blank');
+  if(!win){showToast('اسمح بالنوافذ المنبثقة','warn');return;}
+  var h='<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8">';
+  h+='<style>body{font-family:Cairo,sans-serif;padding:6mm;margin:0}';
+  h+='.c{border:2.5px solid #1a7a4a;border-radius:14px;padding:14px;position:relative;overflow:hidden}';
+  h+='.wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:44px;font-weight:900;color:rgba(26,122,74,0.04);white-space:nowrap;pointer-events:none}';
+  h+='.sr{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:#f8f8f8;margin-bottom:3px;font-size:10px}';
+  h+='.sd{width:8px;height:8px;border-radius:50%;flex-shrink:0}';
+  h+='@media print{@page{size:A5;margin:5mm}body{padding:2mm}}</style></head><body>';
+  h+='<div class="c"><div class="wm">Delbaz_Med</div>';
+  h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;padding-bottom:10px;border-bottom:2px solid #1a7a4a">';
+  h+='<div><div style="font-size:8px;color:#888">بطاقة المراقبة المستمرة — ت.ب.ر</div>';
+  h+='<div style="font-size:15px;font-weight:900">'+s.last+' '+s.first+'</div>';
+  h+='<div style="font-size:10px;color:#4a6858">'+cls.name+' | '+(s.gender||'')+' | '+today+'</div></div>';
+  h+='<div style="background:'+sc+';color:white;border-radius:12px;padding:10px 14px;text-align:center">';
+  h+='<div style="font-size:24px;font-weight:900">'+(total==='معفى'?'—':total)+'</div>';
+  h+='<div style="font-size:9px">/20</div><div style="font-size:9px;font-weight:700">'+mn+'</div></div></div>';
+  h+='<div style="margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#4a6858;margin-bottom:5px">سجل الحصص ('+ss.toFixed(1)+'/14)</div>';
+  h+='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">';
+  s.sessions.forEach(function(sv,i){
+    var bg=sv==='A'?'#fde8e8':sv==='M'?'#fff8e1':'#e8f7f0';
+    var col=sv==='A'?'#c0392b':sv==='M'?'#c9a227':'#1a7a4a';
+    h+='<div style="text-align:center;background:'+bg+';border-radius:8px;padding:6px 2px">';
+    h+='<div style="font-size:8px;color:#888">ح'+(i+1)+'</div>';
+    h+='<div style="font-size:13px;font-weight:900;color:'+col+'">'+(sv==='A'?'A':sv==='M'?'M':'✓')+'</div>';
+    h+='<div style="font-size:8px;color:'+col+'">'+(sv==='A'?'0':sv==='M'?'1':'2')+'ن</div></div>';
+  });
+  h+='</div></div>';
+  h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px">';
+  var bx=[['#e8f7f0','#1a7a4a','الحصص',s.note==='معفى'?'—':ss.toFixed(1),'/14'],
+          ['#f0f8ff','#1a6bcc','الانضباط',s.note==='معفى'?'—':s.discipline,'/2'],
+          ['#fff8f0','#c9a227','المشاركة',s.note==='معفى'?'—':s.behavior,'/2'],
+          ['#fdf0ff','#8a4acc','الإبداع',s.note==='معفى'?'—':s.teacher,'/2']];
+  bx.forEach(function(b){
+    h+='<div style="background:'+b[0]+';border-radius:8px;padding:7px;text-align:center">';
+    h+='<div style="font-size:9px;color:#4a6858;font-weight:700">'+b[2]+'</div>';
+    h+='<div style="font-size:15px;font-weight:900;color:'+b[1]+'">'+b[3]+'</div>';
+    h+='<div style="font-size:8px;color:#888">'+b[4]+'</div></div>';
+  });
+  h+='</div>';
+  h+='<div style="background:'+sc+'22;border:1.5px solid '+sc+'44;border-radius:10px;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
+  h+='<div style="font-size:12px;font-weight:900;color:'+sc+'">النقطة النهائية للمراقبة المستمرة</div>';
+  h+='<div style="font-size:20px;font-weight:900;color:'+sc+'">'+(total==='معفى'?'معفى':total+'/20')+'</div></div>';
+  h+='<div style="border-top:1px solid #e0ede6;padding-top:8px;margin-bottom:8px">';
+  h+='<div style="font-size:10px;font-weight:900;color:#1a7a4a;text-align:center;margin-bottom:6px">━━ سلم التنقيط — التربية البدنية والرياضية ━━</div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">';
+  var sc2=[['#1a7a4a','✅ حاضر = 2 نقطة للحصة'],['#c9a227','M مريض = 1 نقطة'],
+           ['#c0392b','A غائب = 0 نقطة'],['#1a6bcc','الانضباط = 2 نقطة'],
+           ['#c9a227','المشاركة = 2 نقطة'],['#8a4acc','الإبداع = 2 نقطة']];
+  sc2.forEach(function(x){h+='<div class="sr"><div class="sd" style="background:'+x[0]+'"></div><span>'+x[1]+'</span></div>';});
+  h+='</div><div style="text-align:center;margin-top:5px;font-size:10px;font-weight:900;color:#1a7a4a;background:#e8f7f0;border-radius:6px;padding:4px">المجموع = 14 + 2 + 2 + 2 = 20 نقطة</div></div>';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e0ede6;padding-top:8px">';
+  h+='<div style="font-size:10px;color:#888">غياب: <b style="color:#c0392b">'+ab+'</b> | مرض: <b style="color:#c9a227">'+sk+'</b></div>';
+  h+='<div style="text-align:center"><div style="font-size:9px;color:#888">الأستاذ</div><div style="font-size:11px;font-weight:900;color:#1a7a4a">Delbaz_Med</div></div>';
+  h+='<div style="font-size:9px;color:#aaa">v1.5</div></div>';
+  h+='</div></body></html>';
+  win.document.write(h);win.document.close();
+  setTimeout(function(){win.print();},800);
+}
+
+// === WHATSAPP CARD ===
+function sendCardWhatsApp(id){
+  var cls=getActiveClass();
+  var s=cls.students.find(function(x){return x.id===id;});
+  if(!s||!s.phone){showToast('أدخل رقم الولي أولاً','warn');return;}
+  var total=calcTotal(s);
+  var ss=calcSessionScore(s.sessions);
+  var ab=s.sessions.filter(function(sv){return sv==='A';}).length;
+  var sk=s.sessions.filter(function(sv){return sv==='M';}).length;
+  var today=new Date().toLocaleDateString('ar-DZ');
+  var mn=total==='معفى'?'معفى':total>=18?'ممتاز':total>=16?'جيد جداً':total>=14?'جيد':total>=10?'مقبول':'ضعيف';
+  var sl='';
+  s.sessions.forEach(function(sv,i){sl+='ح'+(i+1)+': '+(sv==='A'?'غائب':sv==='M'?'مريض':'حاضر')+'\n';});
+  var msg='بطاقة المراقبة المستمرة\n';
+  msg+='التربية البدنية والرياضية\n';
+  msg+='━━━━━━━━━━━━━━━━\n';
+  msg+=s.last+' '+s.first+'\n'+cls.name+'\n'+today+'\n';
+  msg+='━━━━━━━━━━━━━━━━\n'+sl;
+  msg+='━━━━━━━━━━━━━━━━\n';
+  msg+='الحصص: '+ss.toFixed(1)+'/14\n';
+  msg+='الانضباط: '+s.discipline+'/2\n';
+  msg+='المشاركة: '+s.behavior+'/2\n';
+  msg+='الإبداع: '+s.teacher+'/2\n';
+  msg+='━━━━━━━━━━━━━━━━\n';
+  msg+='النقطة: '+total+'/20 - '+mn+'\n';
+  msg+='━━━━━━━━━━━━━━━━\n';
+  msg+='الأستاذ: Delbaz_Med';
+  var ph=s.phone.replace(/\s/g,'');
+  var intl=ph.startsWith('0')?'213'+ph.slice(1):ph;
+  window.open('https://wa.me/'+intl+'?text='+encodeURIComponent(msg));
+}
+
+function exportPDF() {
+  const cls = getActiveClass();
+  if(!cls) return;
+  const students = cls.students;
+  const scored = students.filter(s => s.note !== 'معفى');
+  const avg = scored.length > 0 ? (scored.map(s => calcTotal(s)).filter(t => t !== 'معفى').reduce((a,b) => a+b, 0) / scored.length).toFixed(2) : '0';
+  const today = new Date().toLocaleDateString('ar-DZ');
+  var rows = '';
+  students.forEach(function(s, i) {
+    var total = calcTotal(s);
+    var isEx = s.note === 'معفى';
+    var bg = isEx ? '#d5e8d4' : i%2===0 ? '#fff' : '#f5faf7';
+    var col = isEx ? '#2d6a2d' : total>=15 ? '#1a7a4a' : total>=10 ? '#e67e22' : '#c0392b';
+    var sess = '';
+    s.sessions.forEach(function(sv) { sess += '<td style="color:'+(sv==='A'?'#c0392b':sv==='M'?'#c9a227':'#333')+';font-weight:'+(sv?'700':'400')+'">'+(sv||'')+'</td>'; });
+    rows += '<tr style="background:'+bg+'"><td>'+(i+1)+'</td><td style="text-align:right;font-weight:700">'+s.last+' '+s.first+'</td><td>'+(s.gender||'')+'</td>'+sess+'<td>'+(isEx?'':calcSessionScore(s.sessions).toFixed(1))+'</td><td>'+(isEx?'':s.discipline)+'</td><td>'+(isEx?'':s.behavior)+'</td><td>'+(isEx?'':s.teacher)+'</td><td style="font-weight:900;color:'+col+'">'+(isEx?'معفى':total)+'</td><td>'+(s.note||'')+'</td></tr>';
+  });
+  var win = window.open('', '_blank');
+  if(!win) return;
+  var h = '<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8">';
+  h += '<style>body{font-family:Cairo,sans-serif;font-size:8.5px;padding:8px}body::before{content:"Delbaz_Med";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:80px;font-weight:900;color:rgba(26,122,74,0.05);white-space:nowrap;pointer-events:none}table{width:100%;border-collapse:collapse;font-size:7.5px}th{background:#1a7a4a;color:white;padding:4px 2px;border:1px solid #0d4a2e}td{padding:3px 2px;text-align:center;border:1px solid #dde8e2}@media print{@page{size:A4 landscape;margin:6mm}}</style></head><body>';
+  h += '<div style="text-align:center;border-bottom:2.5px solid #1a7a4a;padding-bottom:6px;margin-bottom:8px"><div style="font-size:14px;font-weight:900;color:#1a7a4a">🏃 المراقبة المستمرة — '+cls.name+'</div><div style="font-size:9px;color:#4a6858">'+today+' | '+students.length+' تلميذ | معدل: '+avg+'/20 | Delbaz_Med v1.5</div></div>';
+  h += '<table><thead><tr><th>#</th><th>اللقب والاسم</th><th>ج</th><th>ح1</th><th>ح2</th><th>ح3</th><th>ح4</th><th>ح5</th><th>ح6</th><th>ح7</th><th>نقاط(14)</th><th>انض</th><th>مشا</th><th>الأستاذ</th><th style="background:#0d4a2e">المراقبة(20)</th><th>ملاحظة</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  h += '<div style="margin-top:10px;display:flex;justify-content:space-between;border-top:1px solid #c5ddd1;padding-top:6px"><div style="text-align:center"><div style="font-size:9px;font-weight:900;color:#1a7a4a;margin-bottom:14px">الأستاذ</div><div style="border-top:1px solid #aaa;width:90px"></div></div><div style="font-size:7px;color:#bbb;align-self:flex-end">Delbaz_Med © May 2026</div><div style="text-align:center"><div style="font-size:9px;font-weight:900;color:#1a7a4a;margin-bottom:14px">الناظر</div><div style="border-top:1px solid #aaa;width:90px"></div></div></div>';
+  h += '</body></html>';
+  win.document.write(h); win.document.close();
+  setTimeout(function(){win.print();}, 800);
+}
+
+function updatePhone(id, val) {
+  var cls = getActiveClass();
+  var s = cls.students.find(function(x){return x.id===id;});
+  if(s){s.phone=val.trim();save();}
+}
+
+
+// === ABOUT MODAL ===
+function openAboutModal() {
+  document.getElementById('aboutModal').classList.add('open');
+}
+function closeAboutModal() {
+  document.getElementById('aboutModal').classList.remove('open');
+}
+
+function sendSMS(id) {
+  var cls = getActiveClass();
+  var s = cls.students.find(function(x){return x.id===id;});
+  if(!s||!s.phone){showToast('⚠️ أدخل رقم الولي أولاً','warn');return;}
+  var total = calcTotal(s);
+  var ab = s.sessions.filter(function(sv){return sv==='A';}).length;
+  var sk = s.sessions.filter(function(sv){return sv==='M';}).length;
+  var msg = 'السلام عليكم، ولي أمر التلميذ '+s.last+' '+s.first+'. المراقبة المستمرة: غياب: '+ab+' | مرض: '+sk+' | النقطة: '+total+'/20. Delbaz_Med';
+  var ph = s.phone.replace(/\s/g,'');
+  window.open('sms:'+ph+'?body='+encodeURIComponent(msg));
+}
+function sendWhatsApp(id) {
+  var cls = getActiveClass();
+  var s = cls.students.find(function(x){return x.id===id;});
+  if(!s||!s.phone){showToast('⚠️ أدخل رقم الولي أولاً','warn');return;}
+  var total = calcTotal(s);
+  var ss = calcSessionScore(s.sessions);
+  var ab = s.sessions.filter(function(sv){return sv==='A';}).length;
+  var sk = s.sessions.filter(function(sv){return sv==='M';}).length;
+  var today = new Date().toLocaleDateString('ar-DZ');
+  var mn = total==='معفى'?'معفى':total>=18?'ممتاز':total>=16?'جيد جداً':total>=14?'جيد':total>=10?'مقبول':'ضعيف';
+  var sl='';
+  s.sessions.forEach(function(sv,i){sl+='ح'+(i+1)+': '+(sv==='A'?'❌ غائب':sv==='M'?'🤒 مريض':'✅ حاضر')+'\n';});
+  var msg='🏃 بطاقة المراقبة المستمرة\nالتربية البدنية والرياضية\n';
+  msg+='━━━━━━━━━━━━━━━━\n';
+  msg+='👤 '+s.last+' '+s.first+'\n🏫 '+cls.name+'\n📅 '+today+'\n';
+  msg+='━━━━━━━━━━━━━━━━\n'+sl;
+  msg+='━━━━━━━━━━━━━━━━\n';
+  msg+='📊 الحصص: '+ss.toFixed(1)+'/14\n';
+  msg+='🔵 الانضباط: '+s.discipline+'/2\n';
+  msg+='🟡 المشاركة: '+s.behavior+'/2\n';
+  msg+='🟣 الأستاذ: '+s.teacher+'/2\n';
+  msg+='━━━━━━━━━━━━━━━━\n';
+  msg+='🎯 النقطة: '+total+'/20 - '+mn+'\n';
+  msg+='━━━━━━━━━━━━━━━━\n👨‍🏫 Delbaz_Med';
+  var ph=s.phone.replace(/\s/g,'');
+  var intl=ph.startsWith('0')?'213'+ph.slice(1):ph;
+  window.open('https://wa.me/'+intl+'?text='+encodeURIComponent(msg));
+}
+
+function saveAndClose(id) {
+  save();
+  // Close the card
+  var card = document.getElementById('card_' + id);
+  if(card) card.classList.remove('open');
+  showToast('✅ تم الحفظ', 'success');
+}
+
+// === TEACHER NAME ===
+function getTeacherName() {
+  return localStorage.getItem('mrc_teacher') || 'Delbaz_Med';
+}
+
+// === SORT STUDENTS ===
+var _isSorted = false;
+var _originalOrder = null;
+
+function sortStudents() {
+  var cls = getActiveClass();
+  if(!cls) return;
+  if(!_isSorted) {
+    // Save original order
+    _originalOrder = cls.students.map(function(s){return s.id;});
+    // Sort high to low
+    cls.students.sort(function(a, b) {
+      var ta = calcTotal(a); var tb = calcTotal(b);
+      if(ta === 'معفى') return 1;
+      if(tb === 'معفى') return -1;
+      return tb - ta;
+    });
+    _isSorted = true;
+    // Update button
+    var btn = document.querySelector('[onclick="sortStudents()"]');
+    if(btn) btn.title = 'إعادة الترتيب الأصلي';
+    save(); render();
+    showToast('✅ مرتب من الأعلى للأدنى — اضغط مجدداً للعودة', 'success');
+  } else {
+    // Restore original order
+    if(_originalOrder) {
+      cls.students.sort(function(a, b) {
+        return _originalOrder.indexOf(a.id) - _originalOrder.indexOf(b.id);
+      });
+    }
+    _isSorted = false;
+    _originalOrder = null;
+    save(); render();
+    showToast('↩️ تم استعادة الترتيب الأصلي', 'success');
+  }
+}
+
+// === TERM REPORT PDF ===
+function exportTermReport() {
+  var today = new Date().toLocaleDateString('ar-DZ');
+  var teacher = getTeacherName();
+  var win = window.open('', '_blank');
+  if(!win) { showToast('⚠️ اسمح بالنوافذ المنبثقة', 'warn'); return; }
+
+  var allHtml = '';
+  state.classes.forEach(function(cls) {
+    var students = cls.students;
+    var scored = students.filter(function(s){return s.note!=='معفى';});
+    var avg = scored.length > 0 ?
+      (scored.map(function(s){return calcTotal(s);})
+        .filter(function(t){return t!=='معفى';})
+        .reduce(function(a,b){return a+b;},0) / scored.length).toFixed(2) : '0';
+
+    // Sort by score
+    var sorted = students.slice().sort(function(a,b){
+      var ta=calcTotal(a); var tb=calcTotal(b);
+      if(ta==='معفى') return 1; if(tb==='معفى') return -1;
+      return tb-ta;
+    });
+
+    var rows = '';
+    sorted.forEach(function(s, i) {
+      var total = calcTotal(s);
+      var isEx = s.note === 'معفى';
+      var bg = isEx ? '#d5e8d4' : i%2===0 ? '#fff' : '#f5faf7';
+      var col = isEx ? '#2d6a2d' : total>=15 ? '#1a7a4a' : total>=10 ? '#e67e22' : '#c0392b';
+      var sess = '';
+      s.sessions.forEach(function(sv){
+        sess += '<td style="color:'+(sv==='A'?'#c0392b':sv==='M'?'#c9a227':'#555')+';font-weight:'+(sv?'700':'400')+'">'+(sv||'')+'</td>';
+      });
+      var ab = s.sessions.filter(function(sv){return sv==='A';}).length;
+      var sk = s.sessions.filter(function(sv){return sv==='M';}).length;
+      rows += '<tr style="background:'+bg+'">'
+        +'<td>'+(i+1)+'</td>'
+        +'<td style="text-align:right;font-weight:700">'+s.last+' '+s.first+'</td>'
+        +'<td>'+(s.gender||'')+'</td>'
+        +sess
+        +'<td>'+(isEx?'':calcSessionScore(s.sessions).toFixed(1))+'</td>'
+        +'<td>'+(isEx?'':s.discipline)+'</td>'
+        +'<td>'+(isEx?'':s.behavior)+'</td>'
+        +'<td>'+(isEx?'':s.teacher)+'</td>'
+        +'<td style="font-weight:900;color:'+col+'">'+(isEx?'معفى':total)+'</td>'
+        +'<td style="color:#c0392b">'+ab+'</td>'
+        +'<td style="color:#c9a227">'+sk+'</td>'
+        +'<td style="color:#2d6a2d;font-size:8px">'+(s.note||'')+'</td>'
+        +'</tr>';
+    });
+
+    allHtml += '<div style="margin-bottom:20px;page-break-inside:avoid">'
+      +'<div style="background:#1a7a4a;color:white;padding:8px 12px;border-radius:8px 8px 0 0;display:flex;justify-content:space-between">'
+      +'<span style="font-size:13px;font-weight:900">'+cls.name+'</span>'
+      +'<span style="font-size:11px">'+students.length+' تلميذ | معدل: '+avg+'/20</span>'
+      +'</div>'
+      +'<table style="width:100%;border-collapse:collapse;font-size:7.5px">'
+      +'<thead><tr style="background:#155a38">'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">#</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">اللقب والاسم</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">ج</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">ح1</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">ح2</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">ح3</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">ح4</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">ح5</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">ح6</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">ح7</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">نقاط(14)</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">انض</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">مشا</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">أستاذ</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e;background:#0d4a2e">المراقبة(20)</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e;color:#ff8a8a">غ</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e;color:#ffd700">م</th>'
+      +'<th style="color:white;padding:3px 2px;border:1px solid #0d4a2e">ملاحظة</th>'
+      +'</tr></thead>'
+      +'<tbody>'+rows+'</tbody>'
+      +'</table></div>';
+  });
+
+  var totalStudents = state.classes.reduce(function(a,c){return a+c.students.length;},0);
+  var globalAvg = (state.classes.reduce(function(a,cls){
+    var sc=cls.students.filter(function(s){return s.note!=='معفى';});
+    return a+(sc.length>0?sc.map(function(s){return calcTotal(s);}).filter(function(t){return t!=='معفى';}).reduce(function(a,b){return a+b;},0)/sc.length:0);
+  },0)/Math.max(1,state.classes.length)).toFixed(2);
+
+  var h = '<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8">';
+  h += '<style>body{font-family:Cairo,sans-serif;font-size:9px;padding:8px;position:relative}';
+  h += 'body::before{content:"Delbaz_Med";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:80px;font-weight:900;color:rgba(26,122,74,0.04);white-space:nowrap;pointer-events:none}';
+  h += 'td{padding:2px;text-align:center;border:1px solid #dde8e2}';
+  h += '@media print{@page{size:A4 landscape;margin:6mm}}</style></head><body>';
+  h += '<div style="text-align:center;border-bottom:3px solid #1a7a4a;padding-bottom:8px;margin-bottom:12px">';
+  h += '<div style="font-size:16px;font-weight:900;color:#1a7a4a">تقرير نهاية الفصل — المراقبة المستمرة</div>';
+  h += '<div style="font-size:10px;color:#4a6858;margin-top:3px">التربية البدنية والرياضية | '+today+' | مجموع التلاميذ: '+totalStudents+' | المعدل العام: '+globalAvg+'/20</div>';
+  h += '<div style="font-size:9px;color:#aaa;margin-top:2px">الأستاذ: '+teacher+' — Delbaz_Med v1.5</div></div>';
+  h += allHtml;
+  h += '<div style="margin-top:15px;display:flex;justify-content:space-between;border-top:1px solid #c5ddd1;padding-top:8px">';
+  h += '<div style="text-align:center"><div style="font-size:10px;font-weight:900;color:#1a7a4a;margin-bottom:16px">الأستاذ: '+teacher+'</div><div style="border-top:1px solid #aaa;width:120px"></div></div>';
+  h += '<div style="font-size:8px;color:#bbb;align-self:flex-end">Delbaz_Med © May 2026</div>';
+  h += '<div style="text-align:center"><div style="font-size:10px;font-weight:900;color:#1a7a4a;margin-bottom:16px">الناظر</div><div style="border-top:1px solid #aaa;width:120px"></div></div></div>';
+  h += '</body></html>';
+  win.document.write(h); win.document.close();
+  setTimeout(function(){win.print();}, 900);
+}
+
+// === PRINT CLASS LIST ===
+function printClassList() {
+  var cls = getActiveClass();
+  if(!cls) return;
+  var today = new Date().toLocaleDateString('ar-DZ');
+  var teacher = getTeacherName();
+  var win = window.open('', '_blank');
+  if(!win) return;
+
+  var sorted = cls.students.slice().sort(function(a,b){
+    var ta=calcTotal(a); var tb=calcTotal(b);
+    if(ta==='معفى') return 1; if(tb==='معفى') return -1;
+    return tb-ta;
+  });
+
+  var rows = '';
+  sorted.forEach(function(s, i) {
+    var total = calcTotal(s);
+    var isEx = s.note === 'معفى';
+    var col = isEx?'#2d6a2d':total>=15?'#1a7a4a':total>=10?'#e67e22':'#c0392b';
+    var bg = i%2===0?'#fff':'#f5faf7';
+    if(isEx) bg='#d5e8d4';
+    var ab = s.sessions.filter(function(sv){return sv==='A';}).length;
+    var sk = s.sessions.filter(function(sv){return sv==='M';}).length;
+    rows += '<tr style="background:'+bg+'">'
+      +'<td style="font-weight:700">'+(i+1)+'</td>'
+      +'<td style="text-align:right;font-weight:700">'+s.last+'</td>'
+      +'<td style="text-align:right">'+s.first+'</td>'
+      +'<td>'+( s.gender||'')+'</td>'
+      +'<td style="font-weight:900;color:'+col+'">'+(isEx?'معفى':total)+'</td>'
+      +'<td>'+(isEx?'':calcSessionScore(s.sessions).toFixed(1))+'</td>'
+      +'<td>'+(isEx?'':s.discipline)+'</td>'
+      +'<td>'+(isEx?'':s.behavior)+'</td>'
+      +'<td>'+(isEx?'':s.teacher)+'</td>'
+      +'<td style="color:#c0392b">'+ab+'</td>'
+      +'<td style="color:#c9a227">'+sk+'</td>'
+      +'</tr>';
+  });
+
+  var scored = cls.students.filter(function(s){return s.note!=='معفى';});
+  var avg = scored.length>0?(scored.map(function(s){return calcTotal(s);}).filter(function(t){return t!=='معفى';}).reduce(function(a,b){return a+b;},0)/scored.length).toFixed(2):'0';
+
+  var h='<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8">';
+  h+='<style>body{font-family:Cairo,sans-serif;font-size:11px;padding:10mm}';
+  h+='body::before{content:"Delbaz_Med";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:80px;font-weight:900;color:rgba(26,122,74,0.04);white-space:nowrap;pointer-events:none}';
+  h+='table{width:100%;border-collapse:collapse}th{background:#1a7a4a;color:white;padding:6px 4px;border:1px solid #0d4a2e}';
+  h+='td{padding:5px 4px;text-align:center;border:1px solid #dde8e2}';
+  h+='@media print{@page{size:A4 portrait;margin:10mm}}</style></head><body>';
+  h+='<div style="text-align:center;margin-bottom:14px;border-bottom:3px solid #1a7a4a;padding-bottom:10px">';
+  h+='<div style="font-size:18px;font-weight:900;color:#1a7a4a">كشف نقاط المراقبة المستمرة</div>';
+  h+='<div style="font-size:12px;color:#4a6858;margin-top:4px">القسم: '+cls.name+' | التاريخ: '+today+' | التلاميذ: '+cls.students.length+' | المعدل: '+avg+'/20</div>';
+  h+='<div style="font-size:10px;color:#888">الأستاذ: '+teacher+'</div></div>';
+  h+='<table><thead><tr>';
+  h+='<th>#</th><th>اللقب</th><th>الاسم</th><th>ج</th>';
+  h+='<th style="background:#0d4a2e">نقطة المراقبة/20</th>';
+  h+='<th>نقاط الحصص/14</th><th>الانضباط/2</th><th>المشاركة/2</th><th>الأستاذ/2</th>';
+  h+='<th style="color:#ffaaaa">غ</th><th style="color:#ffd700">م</th>';
+  h+='</tr></thead><tbody>'+rows+'</tbody></table>';
+  h+='<div style="margin-top:20px;display:flex;justify-content:space-between">';
+  h+='<div style="text-align:center"><div style="font-weight:900;color:#1a7a4a;margin-bottom:20px">الأستاذ: '+teacher+'</div><div style="border-top:1px solid #aaa;width:130px"></div></div>';
+  h+='<div style="text-align:center"><div style="font-weight:900;color:#1a7a4a;margin-bottom:20px">الناظر</div><div style="border-top:1px solid #aaa;width:130px"></div></div>';
+  h+='</div></body></html>';
+  win.document.write(h); win.document.close();
+  setTimeout(function(){win.print();}, 800);
+}
+
+// === STUDENT STATS (absence/sick per student) ===
+function showStudentStats(id) {
+  var cls = getActiveClass();
+  var s = cls.students.find(function(x){return x.id===id;});
+  if(!s) return;
+  var ab = s.sessions.filter(function(sv){return sv==='A';}).length;
+  var sk = s.sessions.filter(function(sv){return sv==='M';}).length;
+  var pr = s.sessions.filter(function(sv){return sv==='' || sv===undefined;}).length;
+  var msg = s.last+' '+s.first+'\n';
+  msg += 'حاضر: '+pr+' | غائب: '+ab+' | مريض: '+sk;
+  showToast(msg, 'success');
+}
+
+
+// === CUSTOM COLORS ===
+function setColor(color) {
+  // Update CSS variable
+  document.documentElement.style.setProperty('--green', color);
+  // Update header gradient
+  var header = document.querySelector('.header');
+  if(header) header.style.background = 'linear-gradient(135deg, '+color+' 0%, '+color+'cc 100%)';
+  // Update color picker selection
+  var picker = document.getElementById('colorPicker');
+  if(picker) picker.value = color;
+  localStorage.setItem('mrc_color', color);
+  // Close dashboard if open
+  var dsh = document.getElementById('_dsh');
+  if(dsh) dsh.style.display='none';
+  showToast('✅ تم تغيير اللون', 'success');
+}
+function applyColor() {
+  var col = localStorage.getItem('mrc_color');
+  if(col) {
+    document.documentElement.style.setProperty('--green', col);
+    var header = document.querySelector('.header');
+    if(header) header.style.background = 'linear-gradient(135deg, '+col+' 0%, '+col+'cc 100%)';
+    var picker = document.getElementById('colorPicker');
+    if(picker) picker.value = col;
+  }
+}
+
+// === IMPORT EXCEL STUDENTS ===
+function importExcel(event) {
+  var file = event.target.files[0];
+  if(!file) return;
+  if(typeof XLSX === 'undefined') {
+    showToast('⚠️ يتطلب اتصال إنترنت لاستيراد Excel', 'warn');
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = new Uint8Array(e.target.result);
+      var wb = XLSX.read(data, {type:'array'});
+      var ws = wb.Sheets[wb.SheetNames[0]];
+      var rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+      if(rows.length < 2) { showToast('⚠️ الملف فارغ','warn'); return; }
+      
+      // Row 0 = header always - skip it
+      // Detect columns: col0=لقب, col1=اسم, col2=جنس
+      var h0 = String(rows[0][0]||'').trim();
+      var isCombined = h0.includes('لقب') && h0.includes('اسم');
+      
+      var normGender = function(g) {
+        var s = String(g||'').trim();
+        if(s.includes('ذكر')||s==='م'||s.toLowerCase()==='m') return 'ذكر';
+        if(s.includes('أنث')||s.includes('انث')||s==='أ'||s.toLowerCase()==='f') return 'أنثى';
+        return s;
+      };
+      
+      var cls = getActiveClass();
+      var added = 0, skipped = 0;
+      
+      for(var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var last='', first='', gender='';
+        if(isCombined) {
+          var full = String(row[0]||'').trim();
+          if(!full){skipped++;continue;}
+          var idx = full.indexOf(' ');
+          last = idx>0 ? full.substring(0,idx) : full;
+          first = idx>0 ? full.substring(idx+1) : '';
+          gender = String(row[1]||'').trim();
+        } else {
+          last   = String(row[0]||'').trim();
+          first  = String(row[1]||'').trim();
+          gender = String(row[2]||'').trim();
+        }
+        if(!last && !first){skipped++;continue;}
+        cls.students.push({
+          id:'imp_'+Date.now()+'_'+i,
+          last:last||'---', first:first||'',
+          gender:normGender(gender), phone:'',
+          sessions:['','','','','','',''],
+          discipline:2, behavior:1.5, teacher:0, note:''
+        });
+        added++;
+      }
+      save(); render();
+      event.target.value='';
+      showToast('✅ تم استيراد '+added+' تلميذ', 'success');
+    } catch(ex) {
+      showToast('❌ خطأ في قراءة الملف','error');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+// === TEACHER NAME SETTING ===
+function saveTeacherName() {
+  var val = document.getElementById('_teacherInp') ? document.getElementById('_teacherInp').value.trim() : '';
+  if(!val) return;
+  localStorage.setItem('mrc_teacher', val);
+  showToast('✅ تم حفظ اسم الأستاذ', 'success');
+  document.getElementById('_dsh').style.display='none';
+}
+
+// === DRAG & DROP REORDER ===
+var _dragId = null;
+function dragStart(e, id) {
+  _dragId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  var card = document.getElementById('card_'+id);
+  if(card) setTimeout(function(){card.style.opacity='0.5';},0);
+  document.addEventListener('dragend',function(){document.querySelectorAll('.student-card').forEach(function(el){el.style.opacity='1';el.classList.remove('drag-over');});},{once:true});
+}
+function dragEnter(e, id) {
+  e.preventDefault();
+  var card = document.getElementById('card_'+id);
+  if(card && id !== _dragId) card.classList.add('drag-over');
+}
+function dragLeave(e, id) {
+  var card = document.getElementById('card_'+id);
+  if(card) card.classList.remove('drag-over');
+}
+function dragDrop(e, targetId) {
+  e.preventDefault();
+  if(!_dragId || _dragId === targetId) { _dragId=null; return; }
+  var cls = getActiveClass();
+  var fromIdx = cls.students.findIndex(function(s){return s.id===_dragId;});
+  var toIdx   = cls.students.findIndex(function(s){return s.id===targetId;});
+  if(fromIdx===-1||toIdx===-1){_dragId=null;return;}
+  // Swap
+  var moved = cls.students.splice(fromIdx,1)[0];
+  cls.students.splice(toIdx,0,moved);
+  _dragId = null;
+  _isSorted = false;
+  _originalOrder = null;
+  save(); render();
+}
+// =================== INIT ===================
+render();
+if(localStorage.getItem('mrc_dark')==='1'){document.body.classList.add('dark');var b=document.getElementById('darkBtn');if(b)b.textContent='☀️';}
+applyColor();
+</script>
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:52px;margin-bottom:8px">🗑️</div>
+    <div style="font-size:17px;font-weight:900;color:#c0392b;margin-bottom:8px">تأكيد الحذف</div>
+    <div style="background:#fde8e8;border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="font-size:13px;color:#888;margin-bottom:6px">سيتم حذف التلميذ</div>
+      <div id="deleteStudentName" style="font-size:16px;font-weight:900;color:#c0392b"></div>
+      <div style="font-size:11px;color:#888;margin-top:8px">⚠️ لا يمكن التراجع عن هذا الإجراء</div>
+    </div>
+    <button onclick="confirmDelete()" style="width:100%;padding:13px;background:#c0392b;color:white;border:none;border-radius:12px;font-family:Cairo,sans-serif;font-weight:900;font-size:15px;cursor:pointer;margin-bottom:8px">🗑️ نعم، احذف</button>
+    <button onclick="document.getElementById('deleteModal').classList.remove('open')" class="modal-btn modal-cancel">إلغاء</button>
+  </div>
+</div>
+
+<!-- ABOUT MODAL -->
+<div class="modal-overlay" id="aboutModal">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:48px;margin-bottom:8px">🏃</div>
+    <div style="font-size:18px;font-weight:900;color:var(--green);margin-bottom:4px">المراقبة المستمرة</div>
+    <div style="font-size:12px;color:var(--text-light);margin-bottom:16px">التربية البدنية والرياضية</div>
+    <div style="background:var(--green-pale);border-radius:12px;padding:14px;margin-bottom:16px;text-align:right">
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:12px;color:var(--text-light)">رقم الإصدار</span>
+        <span style="font-size:13px;font-weight:900;color:var(--green)">1.5</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:12px;color:var(--text-light)">المطور</span>
+        <span style="font-size:13px;font-weight:900;color:var(--green)">Delbaz_Med</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0">
+        <span style="font-size:12px;color:var(--text-light)">سنة الإصدار</span>
+        <span style="font-size:13px;font-weight:900;color:var(--green)">May 2026</span>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text-light);margin-bottom:16px">يعمل على جميع الأجهزة والمتصفحات<br>Android · iPhone · PC · Mac</div>
+    <button class="modal-btn modal-cancel" onclick="closeAboutModal()">إغلاق</button>
+  </div>
+</div>
+
+<div id="_dsh" class="modal-overlay" style="display:none;align-items:flex-start;overflow-y:auto">
+  <div id="_dc" class="modal" style="max-height:88vh;overflow-y:auto;border-radius:20px;padding:16px;margin:10px;width:100%"></div>
+</div>
+</body>
+</html>
