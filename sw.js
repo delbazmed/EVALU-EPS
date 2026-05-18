@@ -1,14 +1,14 @@
 const CACHE_NAME = 'mrc-v1.5';
 const ASSETS = [
-  '/',
-  '/index.html'
+  './',
+  './index.html'
 ];
 
 // Install: cache all assets
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(ASSETS);
+      return cache.addAll(ASSETS).catch(err => console.log('تنبيه الكاش:', err));
     })
   );
   self.skipWaiting();
@@ -36,7 +36,7 @@ self.addEventListener('fetch', e => {
           caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
         }
         return response;
-      }).catch(() => caches.match('/index.html'));
+      }).catch(() => caches.match('./index.html'));
     })
   );
 });
