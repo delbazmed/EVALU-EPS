@@ -1,7 +1,9 @@
 const CACHE_NAME = 'mrc-v1.5';
 const ASSETS = [
   './',
-  './index.html'
+  './index.html',
+  './manifest.json',
+  './icone-192.png'
 ];
 
 // Install: cache all assets
