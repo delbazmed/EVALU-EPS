@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>المراقبة المستمرة - ت.ب.ر</title>
-  <link rel="manifest" href="manifest.json">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
@@ -493,6 +492,8 @@
   .drag-handle{font-size:18px;color:#c5ddd1;cursor:grab;padding:2px 4px;user-select:none;flex-shrink:0}
   .drag-handle:active{cursor:grabbing;color:var(--green)}
   .student-card.drag-over{border:2px dashed var(--green);background:var(--green-pale)}
+  .term-tab{flex:1;padding:8px 4px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;color:#4a6858;border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s}
+  .term-tab.active{color:var(--green);border-bottom-color:var(--green);background:#f0f9f5}
 </style>
 </head>
 <body>
@@ -517,6 +518,12 @@
 
 <!-- TABS -->
 <div class="tabs" id="tabsBar"></div>
+<!-- TERM TABS -->
+<div style="display:flex;background:white;border-bottom:2px solid #e0ede6;padding:0 14px" id="termBar">
+  <button class="term-tab active" id="tt1" onclick="switchTerm('t1')">الفصل الأول</button>
+  <button class="term-tab" id="tt2" onclick="switchTerm('t2')">الفصل الثاني</button>
+  <button class="term-tab" id="tt3" onclick="switchTerm('t3')">الفصل الثالث</button>
+</div>
 
 <!-- CONTENT -->
 <div class="content" id="mainContent"></div>
@@ -585,7 +592,8 @@ let state = JSON.parse(localStorage.getItem('mrc_state') || 'null') || {
     { id: 'c5', name: '3 علوم ت', students: [] },
     { id: 'c6', name: '3 لغات وهندسة', students: [] },
   ],
-  activeClass: 'c1'
+  activeClass: 'c1',
+  activeTerm: 't1'
 };
 
 // Populate from Excel data
@@ -656,23 +664,22 @@ function save() {
 
 // =================== SESSION LOGIC ===================
 function calcSessionScore(sessions) {
-  // Each session: present=2, late=1.5, absent=0, empty(present)=2
-  // Max = 7 sessions × 2 = 14
   let total = 0;
-  sessions.forEach(s => {
+  sessions.forEach(function(s) {
     if (s === 'A') total += 0;
     else if (s === 'M') total += 1;
-    else total += 2; // present or empty
+    else total += 2;
   });
   return Math.min(total, 14);
 }
 
 function calcTotal(student) {
-  if (student.note === 'معفى') return 'معفى';
-  const sessions = calcSessionScore(student.sessions);
-  const disc = parseFloat(student.discipline) || 0;
-  const beh = parseFloat(student.behavior) || 0;
-  const teach = parseFloat(student.teacher) || 0;
+  var td = getStudentTerm(student, getActiveTerm());
+  if (td.note === 'معفى') return 'معفى';
+  var sessions = calcSessionScore(td.sessions);
+  var disc = parseFloat(td.discipline) || 0;
+  var beh = parseFloat(td.behavior) || 0;
+  var teach = parseFloat(td.teacher) || 0;
   return Math.min(sessions + disc + beh + teach, 20);
 }
 
@@ -822,10 +829,10 @@ function renderStudentsList(filter) {
             `}
             <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
               <select class="note-select" onchange="updateNote('${s.id}',this.value)">
-                <option value="" ${s.note===''?'selected':''}>— بدون ملاحظة —</option>
-                <option value="معفى" ${s.note==='معفى'?'selected':''}>🏥 معفى</option>
-                <option value="ممتاز" ${s.note==='ممتاز'?'selected':''}>⭐ ممتاز</option>
-                <option value="جيد جداً" ${s.note==='جيد جداً'?'selected':''}>👍 جيد جداً</option>
+                <option value="" ${getStudentTerm(s,getActiveTerm()).note===''?'selected':''}>— بدون ملاحظة —</option>
+                <option value="معفى" ${getStudentTerm(s,getActiveTerm()).note==='معفى'?'selected':''}>🏥 معفى</option>
+                <option value="ممتاز" ${getStudentTerm(s,getActiveTerm()).note==='ممتاز'?'selected':''}>⭐ ممتاز</option>
+                <option value="جيد جداً" ${getStudentTerm(s,getActiveTerm()).note==='جيد جداً'?'selected':''}>👍 جيد جداً</option>
               </select>
               <button onclick="saveAndClose('${s.id}')" style="flex:1;padding:10px;background:var(--green);color:white;border:none;border-radius:10px;font-family:Cairo,sans-serif;font-size:14px;font-weight:900;cursor:pointer">💾 حفظ</button>
             </div>
@@ -866,11 +873,11 @@ let currentPopupSessionIdx = null;
 
 function openSessionPopup(studentId, sessionIdx, event) {
   event.stopPropagation();
-  const cls = getActiveClass();
-  const s = cls.students.find(x => x.id === studentId);
+  var cls = getActiveClass();
+  var s = cls.students.find(function(x){return x.id===studentId;});
   currentPopupStudentId = studentId;
   currentPopupSessionIdx = sessionIdx;
-  document.getElementById('popupTitle').textContent = `الحصة ${sessionIdx + 1} — ${s.last} ${s.first}`;
+  document.getElementById('popupTitle').textContent = 'الحصة '+(sessionIdx+1)+' — '+s.last+' '+s.first;
   document.getElementById('sessionPopup').classList.add('show');
   document.getElementById('popupOverlay').classList.add('show');
 }
@@ -884,46 +891,45 @@ function closeSessionPopup() {
 
 function setSession(val) {
   if (!currentPopupStudentId) return;
-  const cls = getActiveClass();
-  const s = cls.students.find(x => x.id === currentPopupStudentId);
-  s.sessions[currentPopupSessionIdx] = val === 'P' ? '' : val;
+  var cls = getActiveClass();
+  var s = cls.students.find(function(x){return x.id===currentPopupStudentId;});
+  var td = getStudentTerm(s, getActiveTerm());
+  td.sessions[currentPopupSessionIdx] = val === 'P' ? '' : val;
   save();
   closeSessionPopup();
   renderStudentsList(document.getElementById('searchBox')?.value || '');
-  // Re-open the card
-  setTimeout(() => {
-    const card = document.getElementById('card_' + currentPopupStudentId);
+  setTimeout(function() {
+    var card = document.getElementById('card_' + currentPopupStudentId);
     if (card) card.classList.add('open');
   }, 10);
 }
 
 function updateScore(id, field, val) {
-  const cls = getActiveClass();
-  const s = cls.students.find(x => x.id === id);
-  s[field] = parseFloat(val) || 0;
-  // Update total live
-  const total = calcTotal(s);
-  const el = document.getElementById('total_' + id);
-  if (el) el.textContent = total + ' / 20';
-  // Update card score
-  const card = document.getElementById('card_' + id);
-  if (card) {
-    const scoreEl = card.querySelector('.student-score');
-    scoreEl.textContent = total;
-    scoreEl.className = 'student-score ' + getScoreClass(total);
+  var cls = getActiveClass();
+  var s = cls.students.find(function(x){return x.id===id;});
+  var td = getStudentTerm(s, getActiveTerm());
+  td[field] = parseFloat(val) || 0;
+  var total = calcTotal(s);
+  var el = document.getElementById('total_'+id);
+  if(el) el.textContent = total+' / 20';
+  var card = document.getElementById('card_'+id);
+  if(card) {
+    var scoreEl = card.querySelector('.student-score');
+    if(scoreEl) { scoreEl.textContent = total==='معفى'?'معفى':total; scoreEl.className='student-score '+getScoreClass(total); }
   }
   save();
 }
 
 function updateNote(id, val) {
-  const cls = getActiveClass();
-  const s = cls.students.find(x => x.id === id);
-  s.note = val;
+  var cls = getActiveClass();
+  var s = cls.students.find(function(x){return x.id===id;});
+  var td = getStudentTerm(s, getActiveTerm());
+  td.note = val;
   save();
   renderStudentsList(document.getElementById('searchBox')?.value || '');
-  setTimeout(() => {
-    const card = document.getElementById('card_' + id);
-    if (card) card.classList.add('open');
+  setTimeout(function() {
+    var card = document.getElementById('card_'+id);
+    if(card) card.classList.add('open');
   }, 10);
 }
 
@@ -1882,10 +1888,49 @@ function dragDrop(e, targetId) {
   _originalOrder = null;
   save(); render();
 }
+
+// === TERM HELPERS ===
+function getActiveTerm() {
+  return state.activeTerm || 't1';
+}
+
+function getStudentTerm(s, term) {
+  if(!s.terms) s.terms = {};
+  if(!s.terms[term]) {
+    s.terms[term] = {
+      sessions: ['','','','','','',''],
+      discipline: 2,
+      behavior: 1.5,
+      teacher: 0,
+      note: ''
+    };
+  }
+  return s.terms[term];
+}
+
+function switchTerm(term) {
+  state.activeTerm = term;
+  save();
+  // Update term tab UI
+  ['t1','t2','t3'].forEach(function(t) {
+    var btn = document.getElementById('tt'+t.slice(1));
+    if(btn) btn.classList.toggle('active', t===term);
+  });
+  render();
+}
+
+function applyTermTabs() {
+  var term = getActiveTerm();
+  ['t1','t2','t3'].forEach(function(t) {
+    var btn = document.getElementById('tt'+t.slice(1));
+    if(btn) btn.classList.toggle('active', t===term);
+  });
+}
 // =================== INIT ===================
 render();
 if(localStorage.getItem('mrc_dark')==='1'){document.body.classList.add('dark');var b=document.getElementById('darkBtn');if(b)b.textContent='☀️';}
 applyColor();
+applyTermTabs();
 </script>
 <!-- DELETE CONFIRM MODAL -->
 <div class="modal-overlay" id="deleteModal">

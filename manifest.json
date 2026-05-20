@@ -2,7 +2,7 @@
   "name": "المراقبة المستمرة",
   "short_name": "مراقبة",
   "description": "تطبيق المراقبة المستمرة للتربية البدنية والرياضية - Delbaz_Med",
-  "start_url": "./index.html",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#1a7a4a",
   "theme_color": "#1a7a4a",
@@ -11,17 +11,10 @@
   "dir": "rtl",
   "icons": [
     {
-      "src": "icone-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icone-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
-
